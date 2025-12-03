@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotiApp</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #fcdc4d; }
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 { color: #fc0505; margin-bottom: 20px; }
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+nav {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+nav span {
+    display: inline-block;
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+nav span:hover { color: red; }
+
+.busqueda {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.busqueda input {
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1 1 200px;
+    max-width: 300px;
+}
+
+.busqueda button {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    background: black;
+    color: white;
+    cursor: pointer;
+}
+
+.busqueda button:hover { background: #333; }
+
+.container-noticias {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.item:hover { transform: translateY(-5px); }
+
+.item img { width: 100%; height: 150px; object-fit: cover; }
+.item h2 { margin: 10px; font-size: 18px; }
+.item p { margin: 0 10px 10px; font-size: 14px; color: #555; }
+.info_item {
+    display: flex;
+    justify-content: space-between;
+    background: #eab308;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+#ver-mas {
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 20px auto;
+    cursor: pointer;
+    display: block;
+}
+
+#ver-mas:hover { background: #333; }
+
+/* Media queries para móviles */
+@media (max-width: 600px) {
+    nav span { font-size: 12px; padding: 5px 8px; }
+    .item h2 { font-size: 16px; }
+    .item p { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>NotiApp</h1>
+    <header>
+        <nav>
+            <span>Tecnología</span>
+            <span>Programación</span>
+            <span>Deportes</span>
+            <span>Economía</span>
+            <span>Educación</span>
+        </nav>
+        <div class="busqueda">
+            <input type="text" placeholder="Qué desea buscar">
+            <button>Buscar</button>
+        </div>
+    </header>
+
+    <div class="container-noticias">
+        <div class="item">
+            <img src="" alt="Noticia 1">
+            <h2>Título Noticia 1</h2>
+            <p>Descripción breve de la noticia número 1 para mostrar contenido.</p>
+            <div class="info_item"><span>Autor 1</span><span>03/12/2025</span></div>
+        </div>
+
+        <div class="item">
+            <img src="" alt="Noticia 2">
+            <h2>Título Noticia 2</h2>
+            <p>Descripción breve de la noticia número 2 para mostrar contenido.</p>
+            <div class="info_item"><span>Autor 2</span><span>03/12/2025</span></div>
+        </div>
+
+        <div class="item">
+            <img src="" alt="Noticia 3">
+            <h2>Título Noticia 3</h2>
+            <p>Descripción breve de la noticia número 3 para mostrar contenido.</p>
+            <div class="info_item"><span>Autor 3</span><span>03/12/2025</span></div>
+        </div>
+
+        <div class="item">
+            <img src="" alt="Noticia 4">
+            <h2>Título Noticia 4</h2>
+            <p>Descripción breve de la noticia número 4 para mostrar contenido.</p>
+            <div class="info_item"><span>Autor 4</span><span>03/12/2025</span></div>
+        </div>
+    </div>
+
+    <button id="ver-mas">Ver más noticias</button>
+</div>
+</body>
+</html>
