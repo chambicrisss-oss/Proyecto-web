@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotiApp</title>
+
+<style>
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    background: #0B0B45;
+}
+
+/* CONTENEDOR GENERAL */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* TITULO */
+h1 {
+    text-align: center;
+    color: #fc0505;
+    margin-bottom: 10px;
+    font-size: 40px;
+}
+
+/* NAV PRINCIPAL */
+nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+nav span {
+    background: black;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+nav span:hover { color: red; }
+
+/* MENU HAMBURGUESA */
+.menu-btn {
+    display: none;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.mobile-nav span {
+    background: white;
+    color: black;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+/* BUSCADOR */
+.busqueda {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+.busqueda input {
+    padding: 8px 15px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    width: 250px;
+}
+.busqueda button {
+    padding: 8px 15px;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.busqueda button:hover { background: #333; }
+
+/* NOTICIAS GRID */
+.noticias {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 22px;
+}
+
+.noticia {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform .3s;
+    display: flex;
+    flex-direction: column;
+}
+.noticia:hover { transform: translateY(-6px); }
+
+.noticia img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.noticia h2 {
+    font-size: 18px;
+    margin: 10px;
+}
+.noticia p {
+    font-size: 14px;
+    margin: 5px 10px 10px;
+    color: #555;
+}
+
+/* INFO FOOTER */
+.info {
+    display: flex;
+    justify-content: space-between;
+    background: #b3d9ff;
+    padding: 7px 10px;
+    font-size: 13px;
+}
+
+/* PAGINADOR */
+.paginador {
+    text-align: center;
+    margin-top: 20px;
+}
+.paginador span {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 5px;
+    background: black;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.paginador span.active { background: #fc0505; }
+
+/* ----------------------------- */
+/*   RESPONSIVE PARA MÓVILES    */
+/* ----------------------------- */
+
+@media (max-width: 768px) {
+
+    h1 { font-size: 30px; }
+
+    /* mostrar hamburguesa */
+    .menu-btn {
+        display: block;
+    }
+
+    /* ocultar menú normal */
+    nav {
+        display: none;
+    }
+
+    /* mostrar menú móvil cuando se active */
+    .mobile-nav.active {
+        display: flex;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- BOTÓN MENÚ MÓVIL -->
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+    <h1>NotiApp</h1>
+
+    <!-- NAV ESCRITORIO -->
+    <nav>
+        <span onclick="buscar('Tecnología')">Tecnología</span>
+        <span onclick="buscar('Programación')">Programación</span>
+        <span onclick="buscar('Deportes')">Deportes</span>
+        <span onclick="buscar('Economía')">Economía</span>
+        <span onclick="buscar('Educación')">Educación</span>
+    </nav>
+
+    <!-- NAV MÓVIL -->
+    <div class="mobile-nav" id="mobileNav">
+        <span onclick="buscar('Tecnología')">Tecnología</span>
+        <span onclick="buscar('Programación')">Programación</span>
+        <span onclick="buscar('Deportes')">Deportes</span>
+        <span onclick="buscar('Economía')">Economía</span>
+        <span onclick="buscar('Educación')">Educación</span>
+    </div>
+
+    <div class="busqueda">
+        <input type="text" id="busqueda" placeholder="Qué desea buscar">
+        <button onclick="buscarTema()">Buscar</button>
+    </div>
+
+    <div class="noticias" id="noticias"></div>
+    <div class="paginador" id="paginador"></div>
+</div>
+
+
+<script>
+    const apiKey = "f3798e116eb342b2bae58e7f0cbd9c11";
+    const cantidadNoticias = 8;
+    let noticiasData = [];
+    let currentPage = 1;
+
+    function toggleMenu() {
+        document.getElementById("mobileNav").classList.toggle("active");
+    }
+
+    function fetchNoticias(tema) {
+        fetch(`https://newsapi.org/v2/everything?q=${tema}&language=es&apiKey=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+            noticiasData = data.articles || [];
+            currentPage = 1;
+            mostrarPagina(currentPage);
+        });
+    }
+
+    function mostrarPagina(page) {
+        const cont = document.getElementById("noticias");
+        cont.innerHTML = "";
+        const inicio = (page-1)*cantidadNoticias;
+        const fin = inicio + cantidadNoticias;
+
+        noticiasData.slice(inicio, fin).forEach(n => {
+            const div = document.createElement("div");
+            div.className = "noticia";
+            div.onclick = () => window.open(n.url, "_blank");
+
+            div.innerHTML = `
+                <img src="${n.urlToImage || 'https://via.placeholder.com/300x200?text=Sin+imagen'}">
+                <h2>${n.title}</h2>
+                <p>${n.description || "Sin descripción disponible."}</p>
+                <div class="info">
+                    <span>NotiApp</span>
+                    <span>${n.publishedAt ? n.publishedAt.split("T")[0] : ""}</span>
+                </div>
+            `;
+            cont.appendChild(div);
+        });
+
+        renderPaginador();
+    }
+
+    function renderPaginador() {
+        const pag = document.getElementById("paginador");
+        pag.innerHTML = "";
+        const totalPages = Math.ceil(noticiasData.length / cantidadNoticias);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const span = document.createElement("span");
+            span.textContent = i;
+            if (i === currentPage) span.classList.add("active");
+            span.onclick = () => {
+                currentPage = i;
+                mostrarPagina(currentPage);
+            };
+            pag.appendChild(span);
+        }
+    }
+
+    function buscar(tema) {
+        fetchNoticias(tema);
+        toggleMenu(); // cerrar menú móvil al elegir
+    }
+
+    function buscarTema() {
+        const tema = document.getElementById("busqueda").value.trim();
+        if (tema) fetchNoticias(tema);
+    }
+
+    fetchNoticias("Tecnología");
+</script>
+
+</body>
+</html>
